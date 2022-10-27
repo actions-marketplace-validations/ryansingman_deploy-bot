@@ -14,5 +14,5 @@ runs:
   using: composite
   steps:
     - run: |
-      bash $GITHUB_ACTION_PATH/deployment.py --source=${{ inputs.source }} --target=${{ inputs.target }}
+      python $GITHUB_ACTION_PATH/deployment.py --source=${{ inputs.source }} --target=${{ inputs.target }}
       shell: bash
