@@ -46,11 +46,11 @@ runs:
       shell: bash
 
     # create PR to target branch from deployment branch
-    uses: repo-sync/pull-request@v2
-    with:
-      source_branch: ${{ env.DEPLOYMENT_BRANCH }}
-      destination_branch: ${{ inputs.target_branch }}
-      pr_title: "Deployment: ${{ env.DATE }}"
-      pr_body: ${{ inputs.pr_body }}
-      pr_allow_empty: false
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: repo-sync/pull-request@v2
+      with:
+        source_branch: ${{ env.DEPLOYMENT_BRANCH }}
+        destination_branch: ${{ inputs.target_branch }}
+        pr_title: "Deployment: ${{ env.DATE }}"
+        pr_body: ${{ inputs.pr_body }}
+        pr_allow_empty: false
+        github_token: ${{ secrets.GITHUB_TOKEN }}
