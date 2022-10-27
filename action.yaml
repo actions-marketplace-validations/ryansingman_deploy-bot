@@ -57,4 +57,5 @@ runs:
         pr_title: "Deployment: ${{ env.DATE }}"
         pr_body: ${{ inputs.pr_body }}
         pr_allow_empty: false
+        pr_reviewer: ${{ env.REVIEWERS }}
         github_token: ${{ github.token }}
