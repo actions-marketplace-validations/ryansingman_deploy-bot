@@ -43,7 +43,7 @@ runs:
     # get list of reviewers for PR
     - run: |
         echo "REVIEWERS=$( \
-            python deploy_bot/get_reviewers.py \
+            python $GITHUB_ACTION_PATH/deploy_bot/get_reviewers.py \
             --base-branch=${{ env.DEPLOYMENT_BRANCH }} \
             --target_branch=${{ inputs.target }} \
         )" >> $GITHUB_ENV
