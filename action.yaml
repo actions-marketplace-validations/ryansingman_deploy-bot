@@ -26,7 +26,7 @@ runs:
     # create deployment branch off of source branch
     # named deployment_{date}
     - run: |
-        git checkout -b ${{ env.DEPLOYMENT_BRANCH }}
+        git checkout -b ${{ env.DEPLOYMENT_BRANCH }} \
         && git push --set-upstream origin ${{ env.DEPLOYMENT_BRANCH }}
       shell: bash
 
