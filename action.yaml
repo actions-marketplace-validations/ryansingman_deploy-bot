@@ -30,7 +30,7 @@ runs:
 
     # name deployment branch
     - run: |
-        && echo "DEPLOYMENT_BRANCH=deployment/${{ env.DATE }}" >> $GITHUB_ENV
+        echo "DEPLOYMENT_BRANCH=deployment/${{ env.DATE }}" >> $GITHUB_ENV
       shell: bash
 
     # create deployment branch off of source branch
