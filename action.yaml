@@ -13,6 +13,23 @@ inputs:
 runs:
   using: composite
   steps:
+    # checkout <source> branch of repo
+    - uses: actions/checkout@v3
+      ref: ${{ inputs.source }}
+
+    # name deployment branch
     - run: |
-        python $GITHUB_ACTION_PATH/deployment.py --source=${{ inputs.source }} --target=${{ inputs.target }}
+        echo "$DEPLOYMENT_BRANCH=deployment/$(date +'%m-%d-%Y')" >> $GITHUB_ENV
       shell: bash
+
+    # create deployment branch off of source branch
+    # named deployment_{date}
+    - run: |
+        git checkout -b ${{ env.DEPLOYMENT_BRANCH }}
+        && git push --set-upstream origin ${{ env.DEPLOYMENT_BRANCH }}
+      shell: bash
+
+    # create PR to target branch from deployment branch
+
+    # tag all contributors on PR branch
+    # > how to do? diff <deployment> and <target> and get usernames?
