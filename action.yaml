@@ -10,6 +10,11 @@ inputs:
     description: target branch to merge into
     required: false
     default: "main"
+  pr_body:
+    description: contents of body of PR
+    required: false
+    default: ":robot: *Automated PR for daily deployment* :robot:"
+
 runs:
   using: composite
   steps:
@@ -20,7 +25,8 @@ runs:
 
     # name deployment branch
     - run: |
-        echo "DEPLOYMENT_BRANCH=deployment/$(date +'%m-%d-%Y')" >> $GITHUB_ENV
+        echo "DATE=$(date +'%m-%d-%Y')" >> $GITHUB_ENV \
+        && echo "DEPLOYMENT_BRANCH=deployment/${{ env.DATE }}" >> $GITHUB_ENV
       shell: bash
 
     # create deployment branch off of source branch
@@ -30,7 +36,21 @@ runs:
         && git push --set-upstream origin ${{ env.DEPLOYMENT_BRANCH }}
       shell: bash
 
-    # create PR to target branch from deployment branch
+    # get list of reviewers for PR
+    - run: |
+        echo "REVIEWERS=$( \
+            python deploy_bot/get_reviewers.py \
+            --base-branch=${{ env.DEPLOYMENT_BRANCH }} \
+            --target_branch=${{ inputs.target }} \
+        ) >> $GITHUB_ENV
+      shell: bash
 
-    # tag all contributors on PR branch
-    # > how to do? diff <deployment> and <target> and get usernames?
+    # create PR to target branch from deployment branch
+    uses: repo-sync/pull-request@v2
+    with:
+      source_branch: ${{ env.DEPLOYMENT_BRANCH }}
+      destination_branch: ${{ inputs.target_branch }}
+      pr_title: "Deployment: ${{ env.DATE }}"
+      pr_body: ${{ inputs.pr_body }}
+      pr_allow_empty: false
+      github_token: ${{ secrets.GITHUB_TOKEN }}
