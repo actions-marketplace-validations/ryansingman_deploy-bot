@@ -50,11 +50,6 @@ runs:
         )" >> $GITHUB_ENV
       shell: bash
 
-    # DEBUG: echo reviewers
-    - run: |
-        echo "${{ env.REVIEWERS }}"
-      shell: bash
-
     # create PR to target branch from deployment branch
     - uses: repo-sync/pull-request@v2
       with:
