@@ -20,7 +20,7 @@ runs:
 
     # name deployment branch
     - run: |
-        echo "$DEPLOYMENT_BRANCH=deployment/$(date +'%m-%d-%Y')" >> $GITHUB_ENV
+        echo "DEPLOYMENT_BRANCH=deployment/$(date +'%m-%d-%Y')" >> $GITHUB_ENV
       shell: bash
 
     # create deployment branch off of source branch
