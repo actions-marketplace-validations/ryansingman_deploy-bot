@@ -46,7 +46,7 @@ runs:
             python deploy_bot/get_reviewers.py \
             --base-branch=${{ env.DEPLOYMENT_BRANCH }} \
             --target_branch=${{ inputs.target }} \
-        ) >> $GITHUB_ENV
+        )" >> $GITHUB_ENV
       shell: bash
 
     # create PR to target branch from deployment branch
