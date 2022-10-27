@@ -53,4 +53,4 @@ runs:
         pr_title: "Deployment: ${{ env.DATE }}"
         pr_body: ${{ inputs.pr_body }}
         pr_allow_empty: false
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ github.token }}
