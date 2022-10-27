@@ -22,10 +22,14 @@ runs:
     - uses: actions/checkout@v3
       with:
         ref: ${{ inputs.source }}
+        
+    # set date str
+    - run: |
+        echo "DATE=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
+      shell: bash
 
     # name deployment branch
     - run: |
-        echo "DATE=$(date +'%m-%d-%Y')" >> $GITHUB_ENV \
         && echo "DEPLOYMENT_BRANCH=deployment/${{ env.DATE }}" >> $GITHUB_ENV
       shell: bash
 
