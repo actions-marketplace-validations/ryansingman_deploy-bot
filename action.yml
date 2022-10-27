@@ -1,0 +1,18 @@
+name: "deploy-bot"
+description: "Deployment merge handler."
+author: "Ryan Singman @ Cleanlab"
+inputs:
+  source:
+    description: source branch to create merge from
+    required: false
+    default: "staging"
+  target:
+    description: target branch to merge into
+    required: false
+    default: "main"
+runs:
+  using: composite
+  steps:
+    - run: |
+      bash $GITHUB_ACTION_PATH/deployment.py --source=${{ inputs.source }} --target=${{ inputs.target }}
+      shell: bash
