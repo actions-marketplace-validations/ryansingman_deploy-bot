@@ -42,7 +42,8 @@ runs:
 
     # get list of reviewers for PR
     - run: |
-        echo "REVIEWERS=$( \
+        git fetch \
+        && echo "REVIEWERS=$( \
             python $GITHUB_ACTION_PATH/deploy_bot/get_reviewers.py \
             --base-branch=origin/${{ env.DEPLOYMENT_BRANCH }} \
             --target-branch=origin/${{ inputs.target }} \
