@@ -44,8 +44,8 @@ runs:
     - run: |
         echo "REVIEWERS=$( \
             python $GITHUB_ACTION_PATH/deploy_bot/get_reviewers.py \
-            --base-branch=${{ env.DEPLOYMENT_BRANCH }} \
-            --target-branch=${{ inputs.target }} \
+            --base-branch=origin/${{ env.DEPLOYMENT_BRANCH }} \
+            --target-branch=origin/${{ inputs.target }} \
         )" >> $GITHUB_ENV
       shell: bash
 
