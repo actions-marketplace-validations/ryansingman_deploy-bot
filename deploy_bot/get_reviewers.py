@@ -32,14 +32,11 @@ def find_author_of_commit(commit_hash: str) -> str:
         check=True,
     )
 
-    # parse author emails from command output
-    author_emails: List[str] = command_output.stdout.decode().splitlines()[0][1:-1]
+    # parse author email from command output
+    author_email: List[str] = command_output.stdout.decode().splitlines()[0][1:-1]
 
     # get and return GitHub usernames from emails
-    return filter([
-        get_github_username_from_email(author_email)
-        for author_email in author_emails
-    ], None)
+    return get_github_username_from_email(author_email) or ""
 
 
 def get_github_username_from_email(author_email: str) -> str:
