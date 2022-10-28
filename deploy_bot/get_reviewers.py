@@ -1,6 +1,10 @@
 import re
 import subprocess
-from typing import List
+from typing import Any, Dict, List
+import warnings
+
+import requests
+
 
 
 def find_contributors_to_branch(base_branch: str, target_branch: str) -> List[str]:
@@ -16,20 +20,57 @@ def find_contributors_to_branch(base_branch: str, target_branch: str) -> List[st
 
 
 def find_author_of_commit(commit_hash: str) -> str:
-    """Finds author of commit.
+    """Finds GitHub username of author of commit.
 
     :param commit_hash: commit hash to find author for
-    :return: author of commit hash
+    :return: GitHub username of author of commit hash
     """
-    # run `git log` to find author
+    # run `git log` to find author emails
     command_output: subprocess.CompletedProcess = subprocess.run(
-        ["git", "log", commit_hash, "-1", "--format='%an'"],
+        ["git", "log", commit_hash, "-1", "--format='%ae'"],
         capture_output=True,
         check=True,
     )
 
-    # parse author from command output
-    return command_output.stdout.decode().splitlines()[0][1:-1]
+    # parse author emails from command output
+    author_emails: List[str] = command_output.stdout.decode().splitlines()[0][1:-1]
+
+    # get and return GitHub usernames from emails
+    return filter([
+        get_github_username_from_email(author_email)
+        for author_email in author_emails
+    ], None)
+
+
+def get_github_username_from_email(author_email: str) -> str:
+    """Gets GitHub username from email, using GitHub API.
+
+    Note:
+    This raises a warning if a username cannot be found, or if multiple usernames are found.
+
+    :param author_email: email of author to query username for
+    :return: GitHub username corresponding to email (or None if more or less thann one username is found)
+    """
+    gh_api_response: requests.Response = requests.get(
+        "https://api.github.com/search/users", params=dict(q=author_email),
+    )
+
+    assert gh_api_response.status_code == 200, "Bad response from GitHub users search API."
+    
+    response_dict: Dict[str, Any] = gh_api_response.json()
+
+    # check that one username was returned
+    num_usernames: int = response_dict.get("total_count", 0)
+    if num_usernames == 0:
+        warnings.warn(f"No username found for email: {author_email} -- cannot tag reviewer.")
+        return None
+
+    elif num_usernames > 1:
+        warnings.warn(f"Multiple usernames found for email: {author_email} -- cannot tag reviewer.")
+        return None
+
+    # get and return username for email
+    return response_dict.get("items")[0]["login"]
 
 
 def find_added_commits(base_branch: str, target_branch: str) -> List[str]:
